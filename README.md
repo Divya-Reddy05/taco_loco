@@ -26,13 +26,13 @@
 ## Quick start 
 
 ### Repository: Source code is available in Github under the path https://github.com/Divya-Reddy05/taco_loco. 
-* Build: 
+### Build: 
 * 	Prerequisites: Java, Maven 
-* 	Steps: 
+###	Steps: 
  1.	Navigate Taco loco source and run below commands to generate the JAR file (JAR will be generated under target folder) 
 * mvn clean package (or) mvn clean install 
 
-* Running application: 
+### Running application: 
  1.	Execute below command to run the application in default port (8080) 
 *   java -jar target/taco-loco-1.0.jar 
  2.	To customize the server port add below command to above 
