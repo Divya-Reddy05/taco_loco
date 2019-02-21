@@ -1,0 +1,8 @@
+com\taco\loco\baseframework\ControllerTestConfiguration.class
+com\taco\loco\baseframework\AbstractControllerTest$1.class
+com\taco\loco\baseframework\AbstractControllerTest.class
+com\taco\loco\controller\ApplicationMetadataControllerTest.class
+com\taco\loco\baseframework\AbstractControllerTest$2.class
+com\taco\loco\controller\TacoLocoControllerTest.class
+com\taco\loco\controller\BaseApiControllerTest.class
+com\taco\loco\service\TacoLocoServiceTest.class

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EnforceHttpsInterceptor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">taco-loco</a> &gt; <a href="index.source.html" class="el_package">com.taco.loco.controller.interceptor</a> &gt; <span class="el_source">EnforceHttpsInterceptor.java</span></div><h1>EnforceHttpsInterceptor.java</h1><pre class="source lang-java linenums">package com.taco.loco.controller.interceptor;
+
+import com.taco.loco.baseframework.exception.HttpException;
+import com.taco.loco.baseframework.exception.enums.ApiErrors;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.UUID;
+
+<span class="nc" id="L10">public class EnforceHttpsInterceptor implements PreHandlerInterceptor {</span>
+
+    private static final String PROTO_HEADER_NAME = &quot;x-forwarded-proto&quot;;
+
+    private static final String HTTPS_PROTOCOL = &quot;https&quot;;
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object object) throws Exception {
+<span class="nc" id="L18">        String forwardedProtocol = request.getHeader(PROTO_HEADER_NAME);</span>
+
+<span class="nc bnc" id="L20" title="All 4 branches missed.">        if (forwardedProtocol == null || isHttps(forwardedProtocol))</span>
+<span class="nc" id="L21">            return true;</span>
+
+<span class="nc" id="L23">        throw new HttpException(ApiErrors.BLOCKED_PROTOCOL.getHttpStatus(), UUID.randomUUID().toString(),</span>
+<span class="nc" id="L24">                ApiErrors.BLOCKED_PROTOCOL.getErrorCode(), ApiErrors.BLOCKED_PROTOCOL.getErrorDescription(), new Throwable());</span>
+    }
+
+    private boolean isHttps(String forwardedProtocol) {
+<span class="nc" id="L28">        return forwardedProtocol.equalsIgnoreCase(HTTPS_PROTOCOL);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

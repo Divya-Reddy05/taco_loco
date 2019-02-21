@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SecurityConfiguration.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">taco-loco</a> &gt; <a href="index.source.html" class="el_package">com.taco.loco.application.config</a> &gt; <span class="el_source">SecurityConfiguration.java</span></div><h1>SecurityConfiguration.java</h1><pre class="source lang-java linenums">package com.taco.loco.application.config;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+
+@Configuration
+<span class="nc" id="L12">public class SecurityConfiguration {</span>
+
+    @Configuration
+    @EnableWebSecurity
+<span class="nc" id="L16">    public static class Default extends WebSecurityConfigurerAdapter {</span>
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            // CSRF protection doesn't make sense for REST API's, so disable it by default.
+<span class="nc" id="L20">            http.csrf().disable();</span>
+<span class="nc" id="L21">        }</span>
+    }
+
+    /**
+     * This configuration overrides Spring Boot's default configuration where it
+     * adds a default user with a generated password that's printed to STDOUT.
+     * &lt;p&gt;
+     * When an application defines a WebSecurityConfigurerAdapter we back off and let the
+     * application configure Spring Security.
+     */
+    @Configuration
+    @ConditionalOnMissingBean(WebSecurityConfigurerAdapter.class)
+<span class="nc" id="L33">    public static class DisableDefaultUser {</span>
+        @Autowired
+        public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+<span class="nc" id="L36">            auth.inMemoryAuthentication();</span>
+<span class="nc" id="L37">        }</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BaseController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">taco-loco</a> &gt; <a href="index.source.html" class="el_package">com.taco.loco.baseframework.controller</a> &gt; <span class="el_source">BaseController.java</span></div><h1>BaseController.java</h1><pre class="source lang-java linenums">package com.taco.loco.baseframework.controller;
+
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
+import com.taco.loco.baseframework.exception.*;
+import com.taco.loco.baseframework.exception.enums.ApiErrors;
+import com.taco.loco.baseframework.response.HttpExceptionJson;
+import com.taco.loco.baseframework.response.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.NotReadablePropertyException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.UUID;
+
+<span class="fc" id="L19">public class BaseController {</span>
+
+<span class="fc" id="L21">    private static Logger LOGGER = LoggerFactory.getLogger(BaseController.class);</span>
+
+    private ResponseEntity&lt;HttpExceptionJson&gt; handleHttpException(HttpException httpException) {
+<span class="nc" id="L24">        HttpExceptionJson httpExceptionJson = new HttpExceptionJson();</span>
+<span class="nc" id="L25">        httpExceptionJson.setIncidentId(httpException.incidentId);</span>
+<span class="nc" id="L26">        httpExceptionJson.setErrorCode(httpException.errorCode);</span>
+<span class="nc" id="L27">        httpExceptionJson.setErrorDescription(httpException.description);</span>
+<span class="nc" id="L28">        return new ResponseEntity&lt;&gt;(httpExceptionJson, HttpStatus.valueOf(httpException.status));</span>
+    }
+
+    @ExceptionHandler(BaseException.class)
+    public ResponseEntity&lt;HttpExceptionJson&gt; handleBaseException(BaseException e) {
+<span class="nc" id="L33">        return handleHttpException(new HttpException(e.getHttpStatus(), e.getIncidentID(), e.getErrorCode(), e.getErrorDescription</span>
+<span class="nc" id="L34">                (), e));</span>
+    }
+
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity&lt;HttpExceptionJson&gt; handleBusinessException(BusinessException e) {
+<span class="nc" id="L39">        return handleHttpException(new HttpException(e.getHttpStatus(), e.getIncidentID(), e.getErrorCode(), e.getErrorDescription(), e));</span>
+    }
+
+    @ExceptionHandler(DataFormatException.class)
+    public ResponseEntity&lt;HttpExceptionJson&gt; handleDataFormatException(DataFormatException e) {
+<span class="nc" id="L44">        return handleHttpException(new HttpException(e.getHttpStatus(), e.getIncidentID(), e.getErrorCode(), e.getErrorDescription(), e));</span>
+    }
+
+    @ExceptionHandler(SystemException.class)
+    public ResponseEntity&lt;HttpExceptionJson&gt; handleSystemException(SystemException e) {
+<span class="nc" id="L49">        return handleHttpException(new HttpException(e.getHttpStatus(), e.getIncidentID(), e.getErrorCode(), e.getErrorDescription(), e));</span>
+    }
+
+    @ExceptionHandler(UnrecognizedPropertyException.class)
+    @ResponseBody
+    public ResponseEntity&lt;Response&gt; exceptionHandlerForInvalidJSONStructure(Exception ex,
+                                                                            HttpServletResponse httpServletResponse) {
+<span class="fc" id="L56">        Response response = new Response();</span>
+<span class="fc" id="L57">        httpServletResponse.setStatus(ApiErrors.INVALID_REQUEST.getHttpStatus());</span>
+<span class="fc" id="L58">        StringBuilder errorDesc = new StringBuilder(&quot;Invalid request&quot;);</span>
+<span class="fc" id="L59">        UnrecognizedPropertyException exception = (UnrecognizedPropertyException) ex;</span>
+<span class="fc" id="L60">        errorDesc.append(&quot; - [&quot;).append(exception.getPropertyName()).append(&quot;]&quot;);</span>
+<span class="fc" id="L61">        response.setError(ApiErrors.INVALID_REQUEST.getErrorCode(), errorDesc.toString());</span>
+<span class="fc" id="L62">        response.setIncidentID(UUID.randomUUID().toString());</span>
+<span class="fc" id="L63">        LOGGER.error(&quot;ERROR - Error occurred with incident id: {} {}&quot;, ex, UUID.randomUUID().toString());</span>
+<span class="fc" id="L64">        return new ResponseEntity&lt;&gt;(response, HttpStatus.valueOf(ApiErrors.INVALID_REQUEST.getHttpStatus()));</span>
+    }
+
+    @ExceptionHandler(NotReadablePropertyException.class)
+    @ResponseBody
+    public ResponseEntity&lt;Response&gt; exceptionHandlerForInvalidJSON(Exception ex,
+                                                                   HttpServletResponse httpServletResponse) {
+<span class="fc" id="L71">        Response response = new Response();</span>
+<span class="fc" id="L72">        httpServletResponse.setStatus(ApiErrors.INVALID_REQUEST.getHttpStatus());</span>
+<span class="fc" id="L73">        StringBuilder errorDesc = new StringBuilder(&quot;Invalid request&quot;);</span>
+<span class="fc" id="L74">        NotReadablePropertyException exception = (NotReadablePropertyException) ex;</span>
+<span class="fc" id="L75">        errorDesc = errorDesc.append(&quot; - [&quot;).append(exception.getPropertyName()).append(&quot;]&quot;);</span>
+<span class="fc" id="L76">        response.setError(ApiErrors.INVALID_REQUEST.getErrorCode(), errorDesc.toString());</span>
+<span class="fc" id="L77">        response.setIncidentID(UUID.randomUUID().toString());</span>
+<span class="fc" id="L78">        LOGGER.error(&quot;ERROR - Error occurred with incident id: {} {}&quot;, ex, UUID.randomUUID().toString());</span>
+<span class="fc" id="L79">        return new ResponseEntity&lt;&gt;(response, HttpStatus.valueOf(ApiErrors.INVALID_REQUEST.getHttpStatus()));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
