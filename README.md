@@ -9,7 +9,6 @@
 * Server name, port customization 
 * Build and API version info 
 * HTTPS csrf 
-* Cache controller configuration 
 * Object mapper 
 * Rest controllers 
 * Service layer for business logic implementation 
